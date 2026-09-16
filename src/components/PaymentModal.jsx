@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
+import { BRANDED_BAG_FEE } from "../data";
 
 function generateOrderNumber() {
   return "DL-" + Math.floor(10000 + Math.random() * 90000);
 }
 
-export default function PaymentModal({ cart, onClose, onSuccess }) {
+export default function PaymentModal({ cart, bagType, onClose, onSuccess }) {
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const tax = subtotal * 0.1;
-  const total = subtotal + tax;
+  const bagFee = bagType === "branded" ? BRANDED_BAG_FEE : 0;
+  const total = subtotal + tax + bagFee;
 
   const [step, setStep] = useState("summary");
   const [orderNumber] = useState(generateOrderNumber);
@@ -71,6 +73,11 @@ export default function PaymentModal({ cart, onClose, onSuccess }) {
               <div className="modal-totals-row">
                 <span>Subtotal</span><span>€{subtotal.toFixed(2)}</span>
               </div>
+              {bagType === "branded" && (
+                <div className="modal-totals-row">
+                  <span>Sac brandé</span><span>€{bagFee.toFixed(2)}</span>
+                </div>
+              )}
               <div className="modal-totals-row">
                 <span>Tax (10%)</span><span>€{tax.toFixed(2)}</span>
               </div>
@@ -175,6 +182,11 @@ export default function PaymentModal({ cart, onClose, onSuccess }) {
               ))}
             </ul>
             <div className="modal-totals">
+              {bagType === "branded" && (
+                <div className="modal-totals-row">
+                  <span>Sac brandé</span><span>€{bagFee.toFixed(2)}</span>
+                </div>
+              )}
               <div className="modal-totals-row modal-totals-total">
                 <span>Total paid</span><span>€{total.toFixed(2)}</span>
               </div>

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { dishes, deliveryInfo } from "./data";
 import Menu from "./components/Menu";
 import Cart from "./components/Cart";
+import BagChoiceModal from "./components/BagChoiceModal";
 import PaymentModal from "./components/PaymentModal";
 import "./App.css";
 
@@ -9,6 +10,8 @@ export default function App() {
   const [cart, setCart] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [showPayment, setShowPayment] = useState(false);
+  const [bagType, setBagType] = useState(null);
+  const [showBagChoice, setShowBagChoice] = useState(false);
 
   function addToCart(dish) {
     setCart((prev) => {
@@ -20,10 +23,27 @@ export default function App() {
       }
       return [...prev, { ...dish, quantity: 1 }];
     });
+    setBagType(null);
   }
 
   function removeFromCart(id) {
     setCart((prev) => prev.filter((item) => item.id !== id));
+    setBagType(null);
+  }
+
+  function handlePlaceOrder() {
+    if (bagType === null) setShowBagChoice(true);
+    else setShowPayment(true);
+  }
+
+  function handleBagConfirm(type) {
+    setBagType(type);
+    setShowBagChoice(false);
+    setShowPayment(true);
+  }
+
+  function handleBagCancel() {
+    setShowBagChoice(false);
   }
 
   const cartCount = cart.length;
@@ -53,13 +73,17 @@ export default function App() {
           onCategoryChange={setSelectedCategory}
           onAddToCart={addToCart}
         />
-        <Cart cart={cart} onRemove={removeFromCart} onCheckout={() => setShowPayment(true)} />
+        <Cart cart={cart} onRemove={removeFromCart} onCheckout={handlePlaceOrder} bagType={bagType} />
       </main>
+      {showBagChoice && (
+        <BagChoiceModal onConfirm={handleBagConfirm} onCancel={handleBagCancel} />
+      )}
       {showPayment && (
         <PaymentModal
           cart={cart}
+          bagType={bagType}
           onClose={() => setShowPayment(false)}
-          onSuccess={() => { setCart([]); setShowPayment(false); }}
+          onSuccess={() => { setCart([]); setBagType(null); setShowPayment(false); }}
         />
       )}
     </div>
