@@ -1,8 +1,11 @@
-export default function Cart({ cart, onRemove, onCheckout }) {
+import { BRANDED_BAG_FEE } from "../data";
+
+export default function Cart({ cart, onRemove, onCheckout, bagType }) {
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
+  const bagFee = bagType === "branded" ? BRANDED_BAG_FEE : 0;
   const tax = subtotal * 0.10;
-  const total = subtotal + tax;
+  const total = subtotal + tax + bagFee;
 
   return (
     <aside className="cart">
@@ -31,6 +34,12 @@ export default function Cart({ cart, onRemove, onCheckout }) {
           <span>Subtotal</span>
           <span>€{subtotal.toFixed(2)}</span>
         </div>
+        {bagType === "branded" && (
+          <div className="cart-totals-row">
+            <span>Sac brandé</span>
+            <span>€{bagFee.toFixed(2)}</span>
+          </div>
+        )}
         <div className="cart-totals-row">
           <span>Tax (10%)</span>
           <span>€{tax.toFixed(2)}</span>

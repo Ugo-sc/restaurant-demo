@@ -3,6 +3,13 @@ export const deliveryInfo = {
   etaMax: 35, // average delivery estimate, in minutes
 };
 
+export const BRANDED_BAG_FEE = 3.0;
+
+export const BAG_OPTIONS = [
+  { id: "standard", label: "Sac standard", description: "Sac de livraison standard, inclus.", price: 0, image: "bag-standard.jpg" },
+  { id: "branded", label: "Sac brandé", description: "Sac réutilisable aux couleurs roofood.", price: BRANDED_BAG_FEE, image: "bag-branded.jpg" },
+];
+
 export const dishes = [
   { id: 1, name: "Bruschetta", description: "Toasted bread with tomatoes, garlic and fresh basil", price: 6.5, category: "Starters", emoji: "🍞" },
   { id: 2, name: "Soup of the Day", description: "Ask your waiter for today's homemade soup", price: 5.0, category: "Starters", emoji: "🍲" },
